@@ -1,5 +1,5 @@
 import {MatchSource, Reader, ReadResult, toReader} from "./Reader";
-import value from "./matchers/value";
+import {value} from "./Matchers";
 
 export type Matcher = (reader: Reader) => MatchResult;
 export type Expression = string | Matcher;
@@ -19,10 +19,10 @@ export class MatchResult {
 
     public static of(reader: Reader, res: ReadResult, test: (val: string) => boolean): MatchResult {
         const isOk = test(res.value);
-        return isOk ? MatchResult.match(res.value.length, res.next, res.value) : MatchResult.noMatch(reader);
+        return isOk ? MatchResult.withMatch(res.value.length, res.next, res.value) : MatchResult.noMatch(reader);
     }
 
-    public static match(consumed: number, next: Reader, data: any): MatchResult {
+    public static withMatch(consumed: number, next: Reader, data: any): MatchResult {
         const res = new MatchResult();
         res.matches = true;
         res.consumed = consumed;
@@ -44,5 +44,16 @@ export class MatchResult {
     public consumed: number;
     public next: Reader;
     public data: any;
+
+    public apply(child: MatchResult): MatchResult {
+        this.consumed += child.consumed;
+        this.next = child.next;
+        this.data.push(child.data);
+        return this;
+    }
+
+    public applyIfMatches(child: MatchResult): MatchResult {
+        return child.matches ? this.apply(child) : this;
+    }
 
 }
