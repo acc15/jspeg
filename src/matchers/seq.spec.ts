@@ -2,7 +2,6 @@ import "mocha";
 import {expect} from "chai";
 
 import {match} from "../Matcher";
-import StringReader from "../readers/StringReader";
 import seq from "./seq";
 
 describe("seq", () => {
