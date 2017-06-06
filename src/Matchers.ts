@@ -1,4 +1,4 @@
-import {Expression, match, Matcher, MatchResult} from "./Matcher";
+import {Expression, match, Matcher, MatchResult, toMatcher} from "./Matcher";
 
 export function noMatch(): Matcher {
     return r => MatchResult.noMatch(r);
@@ -19,7 +19,9 @@ export function repeat(min: number, max: number, e: Expression): Matcher {
             return res;
         }
 
-        let itemRes = match(e, res.next);
+        const m = toMatcher(e);
+
+        let itemRes = m(res.next);
         while (itemRes.matches) {
             res.apply(itemRes);
             if (res.data.length >= max) {
