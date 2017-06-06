@@ -1,23 +1,30 @@
 import {Matcher} from "./Matcher";
+import StringReader from "./readers/StringReader";
 
-export interface IReader {
+export interface Reader {
     read(n: number): ReadResult;
-    ignore(p: Matcher): IReader;
+    ignore(p: Matcher): Reader;
+}
+
+export type MatchSource = Reader | string;
+
+export function toReader(m: MatchSource) {
+    return typeof m === "string" ? new StringReader(m) : m;
 }
 
 export class ReadResult {
-    public static empty(r: IReader) {
+    public static empty(r: Reader) {
         return new ReadResult("", r);
     }
 
-    public static of(value: string, r: IReader) {
+    public static of(value: string, r: Reader) {
         return new ReadResult(value, r);
     }
 
     public value: string;
-    public next: IReader;
+    public next: Reader;
 
-    constructor(value: string, next: IReader) {
+    constructor(value: string, next: Reader) {
         this.value = value;
         this.next = next;
     }

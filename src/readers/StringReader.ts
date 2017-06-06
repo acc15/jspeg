@@ -1,11 +1,11 @@
 
 import {Matcher} from "../Matcher";
-import {IReader, ReadResult} from "../Reader";
+import {Reader, ReadResult} from "../Reader";
 
-export default class StringReader implements IReader {
+export default class StringReader implements Reader {
 
-    public pos: number;
-    public str: string;
+    private pos: number;
+    private str: string;
 
     constructor(str: string, pos: number = 0) {
         this.pos = pos;
@@ -18,7 +18,7 @@ export default class StringReader implements IReader {
             : ReadResult.of(this.str.substring(this.pos, this.pos + n), new StringReader(this.str, this.pos + n));
     }
 
-    public ignore(p: Matcher): IReader {
+    public ignore(p: Matcher): Reader {
         return this;
     }
 

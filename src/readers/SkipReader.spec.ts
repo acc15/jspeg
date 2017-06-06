@@ -4,7 +4,7 @@ import {expect} from "chai";
 import IgnoreReader from "./SkipReader";
 import StringReader from "./StringReader";
 
-import { value } from "../Matchers";
+import value from "../matchers/value";
 
 describe("SkipReader", () => {
     const r = new IgnoreReader(new StringReader("aabacdaaeaa"), value("a"));

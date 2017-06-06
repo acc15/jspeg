@@ -1,12 +1,12 @@
-import {IReader, ReadResult} from "../Reader";
+import {Reader, ReadResult} from "../Reader";
 import {Matcher} from "../Matcher";
 
-export default class SkipReader implements IReader {
+export default class SkipReader implements Reader {
 
-    private reader: IReader;
+    private reader: Reader;
     private skip: Matcher;
 
-    constructor(reader: IReader, skip: Matcher) {
+    constructor(reader: Reader, skip: Matcher) {
         this.reader = reader;
         this.skip = skip;
     }
@@ -32,7 +32,7 @@ export default class SkipReader implements IReader {
         return ReadResult.of(val, new SkipReader(r, this.skip));
     }
 
-    public ignore(p: Matcher): IReader {
+    public ignore(p: Matcher): Reader {
         return new SkipReader(this.reader, p);
     }
 
