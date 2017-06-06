@@ -2,7 +2,7 @@ import "mocha";
 import {expect} from "chai";
 
 import {match, Matcher} from "./Matcher";
-import {any, noMatch, range, seq, value, zeroOrOne} from "./Matchers";
+import {any, noMatch, range, repeat, seq, value, zeroOrOne} from "./Matchers";
 
 function expectMatch(m: Matcher, s: string, matches: boolean, consumed: number, data: any, nextThree: string): void {
     const res = match(m, s);
@@ -51,6 +51,12 @@ describe("Matchers", () => {
     describe("seq", () => {
         it("must match if string eq value", () => {
             expectMatch(seq("a", "b", "c"), "abcdef", true, 3, ["a", "b", "c"], "def");
+        });
+    });
+
+    describe("repeat", () => {
+        it("must match 3AAA", () => {
+            expectMatch(repeat(3, 3, "A"), "AAABC", true, 3, ["A", "A", "A"], "BC");
         });
     });
 
