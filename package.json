@@ -1,31 +1,29 @@
 {
-  "name": "jspeg",
-  "version": "1.0.0",
-  "description": "JavaScript Parsing expressions grammar",
-  "main": "./lib/jspeg.js",
-  "types": "./lib/jspeg.d.ts",
-  "scripts": {
-    "build": "tslint -p . && tsc",
-    "test": "mocha --compilers ts:ts-node/register src/**/*.spec.ts"
-  },
-  "repository": "github:acc15/objpath",
-  "keywords": [
-    "PEG",
-    "jspeg"
-  ],
-  "author": "vm",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/acc15/jspeg/issues"
-  },
-  "homepage": "https://github.com/acc15/jspeg#readme",
-  "devDependencies": {
-    "@types/chai": "^3.5.2",
-    "@types/mocha": "^2.2.41",
-    "chai": "^3.5.0",
-    "mocha": "^3.4.2",
-    "ts-node": "^3.0.4",
-    "tslint": "^5.4.2",
-    "typescript": "^2.3.3"
-  }
+    "name": "jspeg",
+    "version": "1.0.0",
+    "description": "JavaScript Parsing expressions grammar",
+    "scripts": {
+        "build": "tslint -p . && tsc",
+        "test": "mocha --compilers ts:ts-node/register src/**/*.spec.ts"
+    },
+    "repository": "github:acc15/jspeg",
+    "keywords": [
+        "PEG",
+        "jspeg"
+    ],
+    "author": "vm",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/acc15/jspeg/issues"
+    },
+    "homepage": "https://github.com/acc15/jspeg#readme",
+    "devDependencies": {
+        "@types/chai": "^3.5.2",
+        "@types/mocha": "^2.2.41",
+        "chai": "^3.5.0",
+        "mocha": "^3.4.2",
+        "ts-node": "^3.0.4",
+        "tslint": "^5.4.2",
+        "typescript": "^2.3.3"
+    }
 }
