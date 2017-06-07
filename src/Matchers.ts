@@ -75,6 +75,8 @@ export function any(...e: Expression[]): Matcher {
 }
 
 export function recursive(self: (m: Matcher) => Matcher): Matcher {
-    const m: Matcher = r => self(m)(r);
+    let ref = noMatch();
+    const m: Matcher = r => ref(r);
+    ref = self(m);
     return m;
 }
