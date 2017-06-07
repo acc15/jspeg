@@ -73,3 +73,8 @@ export function any(...e: Expression[]): Matcher {
         return MatchResult.noMatch(r);
     };
 }
+
+// TODO implement
+// export function recursive(self: (m: Matcher) => Matcher): Matcher {
+//     return r => self(this)(r);
+// }
