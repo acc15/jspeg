@@ -2,7 +2,7 @@ import "mocha";
 import {expect} from "chai";
 
 import {match, Matcher} from "./Matcher";
-import {any, noMatch, oneOrMore, range, recursive, repeat, seq, value, zeroOrMore, zeroOrOne} from "./Matchers";
+import {any, map, noMatch, oneOrMore, range, recursive, repeat, seq, value, zeroOrMore, zeroOrOne} from "./Matchers";
 
 function expectMatch(m: Matcher, s: string, matches: boolean, consumed: number, data: any, remains: string): void {
     const res = match(m, s);
@@ -78,6 +78,12 @@ describe("Matchers", () => {
     describe("oneOrMore", () => {
         it("no match", () => {
             expectMatch(oneOrMore("A"), "BCD", false, 0, [], "BCD");
+        });
+    });
+
+    describe("map", () => {
+        it("must map data", () => {
+            expectMatch(map(oneOrMore("A"), l => l.join("")), "AAABCD", true, 3, "AAA", "BCD");
         });
     });
 

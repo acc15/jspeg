@@ -1,6 +1,6 @@
 import {Expression, match, Matcher, MatchResult, toMatcher} from "./Matcher";
 
-export const noMatch: Matcher = r => MatchResult.noMatch(r);
+export const noMatch: Matcher = r => MatchResult.withoutMatch(r);
 
 export function value(v: string): Matcher {
     return r => MatchResult.of(r, r.read(v.length), other => other === v);
@@ -68,8 +68,12 @@ export function any(...e: Expression[]): Matcher {
                 return itemRes;
             }
         }
-        return MatchResult.noMatch(r);
+        return MatchResult.withoutMatch(r);
     };
+}
+
+export function map(e: Expression, mapper: (data: any) => any): Matcher {
+    return r => MatchResult.copyOf(match(e, r)).map(mapper);
 }
 
 export function recursive(self: (m: Matcher) => Matcher): Matcher {
