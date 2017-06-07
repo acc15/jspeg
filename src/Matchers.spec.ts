@@ -15,7 +15,7 @@ function expectMatch(m: Matcher, s: string, matches: boolean, consumed: number, 
 describe("Matchers", () => {
     describe("noMatch", () => {
         it("must return result without match", () => {
-            expectMatch(noMatch(), "abcdefgh", false, 0, undefined, "abc");
+            expectMatch(noMatch, "abcdefgh", false, 0, undefined, "abc");
         });
     });
 
