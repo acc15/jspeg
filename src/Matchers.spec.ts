@@ -2,20 +2,20 @@ import "mocha";
 import {expect} from "chai";
 
 import {match, Matcher} from "./Matcher";
-import {any, noMatch, range, recursive, repeat, seq, value, zeroOrOne} from "./Matchers";
+import {any, noMatch, oneOrMore, range, recursive, repeat, seq, value, zeroOrMore, zeroOrOne} from "./Matchers";
 
-function expectMatch(m: Matcher, s: string, matches: boolean, consumed: number, data: any, nextThree: string): void {
+function expectMatch(m: Matcher, s: string, matches: boolean, consumed: number, data: any, remains: string): void {
     const res = match(m, s);
     expect(res.matches).eq(matches);
     expect(res.consumed).eq(consumed);
-    expect(res.next.read(3).value).eq(nextThree);
+    expect(res.next.read(Infinity).value).eq(remains);
     expect(res.data).eql(data);
 }
 
 describe("Matchers", () => {
     describe("noMatch", () => {
         it("must return result without match", () => {
-            expectMatch(noMatch, "abcdefgh", false, 0, undefined, "abc");
+            expectMatch(noMatch, "abcdefgh", false, 0, undefined, "abcdefgh");
         });
     });
 
@@ -33,7 +33,7 @@ describe("Matchers", () => {
 
     describe("value", () => {
         it("must match if string eq value", () => {
-            expectMatch(value("a"), "abcdef", true, 1, "a", "bcd");
+            expectMatch(value("a"), "abcdef", true, 1, "a", "bcdef");
         });
         it("must not match if value not eq", () => {
             expectMatch(value("b"), "abc", false, 0, undefined, "abc");
@@ -63,6 +63,21 @@ describe("Matchers", () => {
     describe("zeroOrOne", () => {
         it("must match even if child not matches", () => {
             expectMatch(zeroOrOne("X"), "abc", true, 0, [], "abc");
+        });
+    });
+
+    describe("zeroOrMore", () => {
+        it("three times", () => {
+            expectMatch(zeroOrMore("A"), "AAABC", true, 3, ["A", "A", "A"], "BC");
+        });
+        it("zero times", () => {
+            expectMatch(zeroOrMore("A"), "BCD", true, 0, [], "BCD");
+        });
+    });
+
+    describe("oneOrMore", () => {
+        it("no match", () => {
+            expectMatch(oneOrMore("A"), "BCD", false, 0, [], "BCD");
         });
     });
 
