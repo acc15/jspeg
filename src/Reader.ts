@@ -1,9 +1,9 @@
-import {Matcher} from "./Matcher";
+import {Expression, Matcher} from "./Matcher";
 import StringReader from "./readers/StringReader";
 
 export interface Reader {
     read(n: number): ReadResult;
-    ignore(p: Matcher): Reader;
+    ignore(p: Expression): Reader;
 }
 
 export type MatchSource = Reader | string;

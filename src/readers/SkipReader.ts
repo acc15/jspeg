@@ -1,5 +1,5 @@
 import {Reader, ReadResult} from "../Reader";
-import {Matcher} from "../Matcher";
+import {Expression, Matcher, toMatcher} from "../Matcher";
 
 export default class SkipReader implements Reader {
 
@@ -32,8 +32,8 @@ export default class SkipReader implements Reader {
         return ReadResult.of(val, new SkipReader(r, this.skip));
     }
 
-    public ignore(p: Matcher): Reader {
-        return new SkipReader(this.reader, p);
+    public ignore(p: Expression): Reader {
+        return new SkipReader(this.reader, toMatcher(p));
     }
 
     public toString(): string {

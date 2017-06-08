@@ -1,5 +1,5 @@
 
-import {Matcher} from "../Matcher";
+import {Expression} from "../Matcher";
 import {Reader, ReadResult} from "../Reader";
 
 export default class StringReader implements Reader {
@@ -18,7 +18,7 @@ export default class StringReader implements Reader {
             : ReadResult.of(this.str.substring(this.pos, this.pos + n), new StringReader(this.str, this.pos + n));
     }
 
-    public ignore(p: Matcher): Reader {
+    public ignore(p: Expression): Reader {
         return this;
     }
 

@@ -6,6 +6,7 @@
     "start": "ts-node calc.ts"
   },
   "devDependencies": {
+    "@types/node": "^7.0.29",
     "ts-node": "^3.0.4"
   },
   "dependencies": {

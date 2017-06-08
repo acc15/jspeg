@@ -4,15 +4,17 @@ import {value} from "./Matchers";
 export type Matcher = (reader: Reader) => MatchResult;
 export type Expression = string | Matcher;
 
-export function toMatcher(expr: Expression): Matcher {
-    if (typeof expr === "string") {
-        return value(expr);
+export function toMatcher(e: Expression): Matcher {
+    if (typeof e === "string") {
+        return value(e);
     }
-    return expr;
+    return e;
 }
 
 export function match(e: Expression, s: MatchSource): MatchResult {
-    return toMatcher(e)(toReader(s));
+    const m = toMatcher(e);
+    const r = toReader(s);
+    return m(r);
 }
 
 export class MatchResult {
