@@ -1,22 +1,12 @@
 {
   "name": "jspeg-example-calc",
-  "main": "./calc.js",
+  "main": "./calc.ts",
+  "private": true,
   "scripts": {
-    "build": "tsc calc.ts",
-    "start": "npm run build && node calc.js"
-  },
-  "keywords": [
-    "PEG",
-    "jspeg",
-    "calc"
-  ],
-  "author": "vm",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/acc15/jspeg/issues"
+    "start": "ts-node calc.ts"
   },
   "devDependencies": {
-    "typescript": "^2.3.3"
+    "ts-node": "^3.0.4"
   },
   "dependencies": {
     "jspeg": "file:../.."
