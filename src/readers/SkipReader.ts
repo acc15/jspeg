@@ -36,6 +36,10 @@ export default class SkipReader implements Reader {
         return new SkipReader(this.reader, toMatcher(p));
     }
 
+    public ignoreMatcher(): Matcher {
+        return this.skip;
+    }
+
     public toString(): string {
         return this.reader.toString();
     }

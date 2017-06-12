@@ -63,9 +63,13 @@ export class MatchResult {
         return this;
     }
 
+    public mapReader(mapper: (r: Reader) => Reader): MatchResult {
+        this.next = mapper(this.next);
+        return this;
+    }
+
     public map(mapper: (data: any) => any): MatchResult {
         this.data = mapper(this.data);
         return this;
     }
-
 }

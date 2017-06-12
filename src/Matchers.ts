@@ -1,4 +1,4 @@
-import {Expression, match, Matcher, MatchResult, toMatcher} from "./Matcher";
+import {Expression, Matcher, MatchResult, toMatcher} from "./Matcher";
 
 export const noMatch: Matcher = r => MatchResult.withoutMatch(r);
 
@@ -24,7 +24,7 @@ export function repeat(min: number, max: number, e: Expression): Matcher {
             if (res.data.length >= max) {
                 break;
             }
-            itemRes = match(e, res.next);
+            itemRes = m(res.next);
         }
 
         res.matches = (res.data.length >= min);
@@ -61,7 +61,6 @@ export function seq(...e: Expression[]): Matcher {
 }
 
 export function any(...e: Expression[]): Matcher {
-    console.log(e);
     const matchers = e.map(toMatcher);
     return r => {
         for (const m of matchers) {
@@ -81,17 +80,10 @@ export function map(e: Expression, mapper: (data: any) => any): Matcher {
 
 export function recursive(self: (m: Matcher) => Matcher): Matcher {
     const f: Matcher = r => self(f)(r);
-    // let ref = noMatch;
-    // const rec: Matcher = r => ref(r);
-    // ref = self(rec);
     return f;
-}
-
-export function str(e: Expression): Matcher {
-    return map(e, d => d.join(""));
 }
 
 export function ignore(i: Expression, e: Expression): Matcher {
     const m = toMatcher(e);
-    return r => m(r.ignore(i));
+    return r => m(r.ignore(i)).mapReader(k => k.ignore(r.ignoreMatcher()));
 }

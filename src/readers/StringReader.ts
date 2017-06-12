@@ -1,6 +1,7 @@
 
-import {Expression} from "../Matcher";
+import {Expression, Matcher} from "../Matcher";
 import {Reader, ReadResult} from "../Reader";
+import {noMatch} from "../Matchers";
 
 export default class StringReader implements Reader {
 
@@ -20,6 +21,10 @@ export default class StringReader implements Reader {
 
     public ignore(p: Expression): Reader {
         return this;
+    }
+
+    public ignoreMatcher(): Matcher {
+        return noMatch;
     }
 
     public toString() {

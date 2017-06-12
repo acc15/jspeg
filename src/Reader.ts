@@ -4,6 +4,7 @@ import StringReader from "./readers/StringReader";
 export interface Reader {
     read(n: number): ReadResult;
     ignore(p: Expression): Reader;
+    ignoreMatcher(): Matcher;
 }
 
 export type MatchSource = Reader | string;
