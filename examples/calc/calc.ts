@@ -16,7 +16,7 @@ function fnOp(data: any): Op {
         const fn = data[0];
         const args = (data[2] as Op[]).map(v => v());
         console.log("invoking " + fn + " with " + args);
-        return args[0];
+        return 0;
     };
 }
 
