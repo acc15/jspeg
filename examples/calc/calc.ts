@@ -1,9 +1,8 @@
 /// <reference types="node" />
 
 import {any, skip, map, noMatch, oneOrMore, range, recursive, seq, zeroOrOne} from "jspeg/lib/Matchers";
-import SkipReader from "jspeg/lib/readers/SkipReader";
-import StringReader from "jspeg/lib/readers/StringReader";
 import * as readline from "readline";
+import {toReader} from "jspeg/lib/Reader";
 
 interface Op {
     eval(): number;
@@ -61,8 +60,7 @@ const root = skip(any(" ", "\t", "\r", "\n"), low);
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 function loop() {
     rl.question("Enter expression: ", expr => {
-        const reader = new SkipReader(new StringReader(expr));
-        const result = root(reader);
+        const result = root(toReader(expr));
         console.log(`matches: ${result.matches}; consumed: ${result.consumed}; eval: ${result.data.eval()}`);
         loop();
     });
