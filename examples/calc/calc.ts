@@ -1,6 +1,6 @@
 /// <reference types="node" />
 
-import {any, ignore, map, noMatch, oneOrMore, range, recursive, seq, zeroOrOne} from "jspeg/lib/Matchers";
+import {any, skip, map, noMatch, oneOrMore, range, recursive, seq, zeroOrOne} from "jspeg/lib/Matchers";
 import SkipReader from "jspeg/lib/readers/SkipReader";
 import StringReader from "jspeg/lib/readers/StringReader";
 import * as readline from "readline";
@@ -50,16 +50,9 @@ function str(data: any): string {
 }
 
 const digits = oneOrMore(range("0", "9"));
-const num = ignore(noMatch, seq(digits, zeroOrOne(seq(".", digits))));
-const unary = map(seq(zeroOrOne(any("+", "-")), num), d => {
-    console.log("unary: " + d);
-    return new NumOp(Number(str(d)));
-});
-
-const low = recursive(l => any(map(seq(high, any("+", "-"), l), d => {
-    console.log("low: " + d);
-    return new BinOp(d[0], d[2], d[1]);
-}), high));
+const num = skip(noMatch, seq(digits, zeroOrOne(seq(".", digits))));
+const unary = map(seq(zeroOrOne(any("+", "-")), num), d => new NumOp(Number(str(d))));
+const low = recursive(l => any(map(seq(high, any("+", "-"), l), d => new BinOp(d[0], d[2], d[1])), high));
 const high = recursive(h => any(map(seq(braced, any("*", "/"), h), d => new BinOp(d[0], d[2], d[1])), braced));
 const braced = any(map(seq("(", low, ")"), d => d[1]), unary);
 
@@ -67,8 +60,8 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 function loop() {
     rl.question("Enter expression: ", expr => {
         const reader = new SkipReader(new StringReader(expr), any(" ", "\t", "\r", "\n"));
-        const data = low(reader).data;
-        console.log("result: " + data.eval());
+        const result = low(reader);
+        console.log(`matches: ${result.matches}; consumed: ${result.consumed}; eval: ${result.data.eval()}`);
         loop();
     });
 }

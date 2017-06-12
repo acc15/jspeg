@@ -1,11 +1,14 @@
 import "mocha";
 import {expect} from "chai";
 
-import {match, Matcher} from "./Matcher";
-import {any, map, noMatch, oneOrMore, range, recursive, repeat, seq, value, zeroOrMore, zeroOrOne} from "./Matchers";
+import {Matcher} from "./Matcher";
+import {any, map, noMatch, oneOrMore, range, recursive, repeat, seq, value, zeroOrMore, zeroOrOne, skip} from "./Matchers";
+import SkipReader from "./readers/SkipReader";
+import StringReader from "./readers/StringReader";
 
 function expectMatch(m: Matcher, s: string, matches: boolean, consumed: number, data: any, remains: string): void {
-    const res = match(m, s);
+    const r = new SkipReader(new StringReader(s), noMatch);
+    const res = m(r);
     expect(res.matches).eq(matches);
     expect(res.consumed).eq(consumed);
     expect(res.next.read(Infinity).value).eq(remains);
@@ -78,6 +81,13 @@ describe("Matchers", () => {
     describe("oneOrMore", () => {
         it("no match", () => {
             expectMatch(oneOrMore("A"), "BCD", false, 0, [], "BCD");
+        });
+    });
+
+    describe("skip", () => {
+        it("must restore skip", () => {
+            expectMatch(skip(" ", seq("AAA", skip(noMatch, "AAA"), "AAA")), "    A A A    AAA  A A  A   ",
+                true, 9, ["AAA", "AAA", "AAA"], "");
         });
     });
 

@@ -1,5 +1,5 @@
 import {Reader, ReadResult} from "../Reader";
-import {Expression, Matcher, toMatcher} from "../Matcher";
+import {Expression, Matcher, MatchResult, toMatcher} from "../Matcher";
 
 export default class SkipReader implements Reader {
 
@@ -15,13 +15,7 @@ export default class SkipReader implements Reader {
         let r = this.reader;
         let val = "";
         while (val.length < n) {
-
-            let res = this.skip(r);
-            while (res.matches && res.consumed > 0) {
-                r = res.next;
-                res = this.skip(r);
-            }
-
+            r = this.consume(r);
             const rd = r.read(1);
             if (rd.value.length === 0) {
                 break;
@@ -29,6 +23,7 @@ export default class SkipReader implements Reader {
             val += rd.value;
             r = rd.next;
         }
+        r = this.consume(r);
         return ReadResult.of(val, new SkipReader(r, this.skip));
     }
 
@@ -42,5 +37,14 @@ export default class SkipReader implements Reader {
 
     public toString(): string {
         return this.reader.toString();
+    }
+
+    private consume(r: Reader): Reader {
+        let res = this.skip(r);
+        while (res.matches && res.consumed > 0) {
+            r = res.next;
+            res = this.skip(r);
+        }
+        return r;
     }
 }

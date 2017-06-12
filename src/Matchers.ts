@@ -83,7 +83,7 @@ export function recursive(self: (m: Matcher) => Matcher): Matcher {
     return f;
 }
 
-export function ignore(i: Expression, e: Expression): Matcher {
+export function skip(i: Expression, e: Expression): Matcher {
     const m = toMatcher(e);
     return r => m(r.ignore(i)).mapReader(k => k.ignore(r.ignoreMatcher()));
 }
