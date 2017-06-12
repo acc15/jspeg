@@ -1,4 +1,5 @@
-import {Expression, Matcher, MatchResult, toMatcher} from "./Matcher";
+import {Expression, Matcher, toMatcher} from "./Matcher";
+import {MatchResult} from "./MatchResult";
 
 export const noMatch: Matcher = r => MatchResult.withoutMatch(r);
 

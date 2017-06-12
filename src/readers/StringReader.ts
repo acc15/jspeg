@@ -1,7 +1,7 @@
-
 import {Expression, Matcher} from "../Matcher";
-import {Reader, ReadResult} from "../Reader";
+import {Reader} from "../Reader";
 import {noMatch} from "../Matchers";
+import {ReadResult} from "../ReadResult";
 
 export default class StringReader implements Reader {
 

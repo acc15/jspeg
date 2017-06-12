@@ -56,11 +56,13 @@ const low = recursive(l => any(map(seq(high, any("+", "-"), l), d => new BinOp(d
 const high = recursive(h => any(map(seq(braced, any("*", "/"), h), d => new BinOp(d[0], d[2], d[1])), braced));
 const braced = any(map(seq("(", low, ")"), d => d[1]), unary);
 
+const root = skip(any(" ", "\t", "\r", "\n"), low);
+
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 function loop() {
     rl.question("Enter expression: ", expr => {
-        const reader = new SkipReader(new StringReader(expr), any(" ", "\t", "\r", "\n"));
-        const result = low(reader);
+        const reader = new SkipReader(new StringReader(expr));
+        const result = root(reader);
         console.log(`matches: ${result.matches}; consumed: ${result.consumed}; eval: ${result.data.eval()}`);
         loop();
     });

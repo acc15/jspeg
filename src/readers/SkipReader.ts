@@ -1,12 +1,14 @@
-import {Reader, ReadResult} from "../Reader";
-import {Expression, Matcher, MatchResult, toMatcher} from "../Matcher";
+import {Reader} from "../Reader";
+import {Expression, Matcher, toMatcher} from "../Matcher";
+import {ReadResult} from "../ReadResult";
+import {noMatch} from "../Matchers";
 
 export default class SkipReader implements Reader {
 
     private reader: Reader;
     private skip: Matcher;
 
-    constructor(reader: Reader, skip: Matcher) {
+    constructor(reader: Reader, skip: Matcher = noMatch) {
         this.reader = reader;
         this.skip = skip;
     }
