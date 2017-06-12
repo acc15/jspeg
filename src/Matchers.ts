@@ -79,6 +79,14 @@ export function map(e: Expression, mapper: (data: any) => any): Matcher {
     return r => MatchResult.copyOf(m(r)).map(mapper);
 }
 
+function toPlainString(d: any): string {
+    return Array.isArray(d) ? d.map(toPlainString).join("") : String(d);
+}
+
+export function str(e: Expression): Matcher {
+    return map(e, toPlainString);
+}
+
 export function recursive(self: (m: Matcher) => Matcher): Matcher {
     const f: Matcher = r => self(f)(r);
     return f;
