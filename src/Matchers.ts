@@ -1,17 +1,19 @@
 import {Expression, Matcher, toMatcher} from "./Matcher";
 import {DataMap, MatchResult} from "./MatchResult";
 
-export const noMatch: Matcher = r => MatchResult.withoutMatch(r);
+export function noMatch<T>(): Matcher<T | undefined> {
+    return r => MatchResult.withoutMatch<T>(r);
+}
 
-export function value(v: string): Matcher {
+export function value(v: string): Matcher<string | undefined> {
     return r => MatchResult.of(r, r.read(v.length), other => other === v);
 }
 
-export function range(low: string, high: string): Matcher {
+export function range(low: string, high: string): Matcher<string | undefined> {
     return r => MatchResult.of(r, r.read(1), v => v >= low && v <= high);
 }
 
-export function repeat(min: number, max: number, e: Expression): Matcher {
+export function repeat<T>(min: number, max: number, e: Expression<T>): Matcher<T[]> {
     const m = toMatcher(e);
     return r => {
         const res = MatchResult.withMatch(0, r, []);
@@ -21,7 +23,7 @@ export function repeat(min: number, max: number, e: Expression): Matcher {
 
         let itemRes = m(res.next);
         while (itemRes.matches) {
-            res.apply(itemRes);
+            MatchResult.apply(res, itemRes);
             if (res.data.length >= max) {
                 break;
             }
@@ -33,19 +35,19 @@ export function repeat(min: number, max: number, e: Expression): Matcher {
     };
 }
 
-export function zeroOrOne(e: Expression): Matcher {
+export function zeroOrOne<T>(e: Expression<T>): Matcher<T[]> {
     return repeat(0, 1, e);
 }
 
-export function zeroOrMore(e: Expression): Matcher {
+export function zeroOrMore<T>(e: Expression<T>): Matcher<T[]> {
     return repeat(0, Infinity, e);
 }
 
-export function oneOrMore(e: Expression): Matcher {
+export function oneOrMore<T>(e: Expression<T>): Matcher<T[]> {
     return repeat(1, Infinity, e);
 }
 
-export function seq(...e: Expression[]): Matcher {
+export function seq<T>(...e: Array<Expression<T>>): Matcher<T[]> {
     const matchers = e.map(toMatcher);
     return r => {
         const res = MatchResult.withMatch(0, r, []);
@@ -55,13 +57,13 @@ export function seq(...e: Expression[]): Matcher {
                 res.matches = false;
                 break;
             }
-            res.apply(itemRes);
+            MatchResult.apply(res, itemRes);
         }
         return res;
     };
 }
 
-export function any(...e: Expression[]): Matcher {
+export function any<T>(...e: Array<Expression<T>>): Matcher<T | string | undefined> {
     const matchers = e.map(toMatcher);
     return r => {
         for (const m of matchers) {
@@ -70,38 +72,31 @@ export function any(...e: Expression[]): Matcher {
                 return itemRes;
             }
         }
-        return MatchResult.withoutMatch(r);
+        return MatchResult.withoutMatch<T>(r);
     };
 }
 
-export type Mapper = DataMap | number;
+export type Mapper<S, R> = DataMap<S, R> | number;
 
-export function map(e: Expression, mapper: Mapper): Matcher {
+export function map<S, R>(e: Expression<S>, mapper: DataMap<S, R>): Matcher<S | R> {
     const m = toMatcher(e);
-    const mapFn: DataMap = typeof mapper === "number" ? (d => d[mapper]) : mapper;
-    return r => {
-        const res = m(r);
-        if (!res.matches) {
-            return res;
-        }
-        return res.map(mapFn);
-    };
+    return r => m(r).map(mapper);
 }
 
 function toPlainString(d: any): string {
     return Array.isArray(d) ? d.map(toPlainString).join("") : String(d);
 }
 
-export function str(e: Expression): Matcher {
-    return map(e, toPlainString);
+export function str<T>(e: Expression<T>): Matcher<T | string> {
+    return map<T, string>(e, toPlainString);
 }
 
-export function recursive(self: (m: Matcher) => Matcher): Matcher {
-    const f: Matcher = r => self(f)(r);
+export function recursive<T>(self: (m: Matcher<T>) => Matcher<T>): Matcher<T> {
+    const f: Matcher<T> = r => self(f)(r);
     return f;
 }
 
-export function skip(i: Expression, e: Expression): Matcher {
+export function skip<T>(i: Expression<any>, e: Expression<T>): Matcher<T | string | undefined> {
     const m = toMatcher(e);
     return r => m(r.ignore(i)).mapReader(k => k.ignore(r.ignoreMatcher()));
 }

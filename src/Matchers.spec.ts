@@ -6,7 +6,7 @@ import {any, map, noMatch, oneOrMore, range, recursive, repeat, seq, value, zero
 import SkipReader from "./readers/SkipReader";
 import StringReader from "./readers/StringReader";
 
-function expectMatch(m: Matcher, s: string, matches: boolean, consumed: number, data: any, remains: string): void {
+function expectMatch<T>(m: Matcher<T>, s: string, matches: boolean, consumed: number, data: T, remains: string): void {
     const r = new SkipReader(new StringReader(s), noMatch);
     const res = m(r);
     expect(res.matches).eq(matches);
@@ -18,7 +18,7 @@ function expectMatch(m: Matcher, s: string, matches: boolean, consumed: number, 
 describe("Matchers", () => {
     describe("noMatch", () => {
         it("must return result without match", () => {
-            expectMatch(noMatch, "abcdefgh", false, 0, undefined, "abcdefgh");
+            expectMatch(noMatch(), "abcdefgh", false, 0, undefined, "abcdefgh");
         });
     });
 
@@ -86,7 +86,7 @@ describe("Matchers", () => {
 
     describe("skip", () => {
         it("must restore skip", () => {
-            expectMatch(skip(" ", seq("AAA", skip(noMatch, "AAA"), "AAA")), "    A A A    AAA  A A  A   ",
+            expectMatch(skip(" ", seq("AAA", skip(noMatch(), "AAA"), "AAA")), "    A A A    AAA  A A  A   ",
                 true, 9, ["AAA", "AAA", "AAA"], "");
         });
     });
@@ -103,7 +103,7 @@ describe("Matchers", () => {
 
     describe("recursive", () => {
         it("must match recursively", () => {
-            expectMatch(recursive(m => any(seq("(", m, ")"), any("a", "b"))), "((a))", true, 5, ["(", ["(", "a", ")"], ")"], "");
+            expectMatch(recursive<string>(m => any(seq(v("("), m, v(")")), any(v("a"), v("b")))), "((a))", true, 5, ["(", ["(", "a", ")"], ")"], "");
         });
     });
 
