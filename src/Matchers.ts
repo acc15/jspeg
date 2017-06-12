@@ -1,5 +1,5 @@
 import {Expression, Matcher, toMatcher} from "./Matcher";
-import {MatchResult} from "./MatchResult";
+import {DataMap, MatchResult} from "./MatchResult";
 
 export const noMatch: Matcher = r => MatchResult.withoutMatch(r);
 
@@ -74,9 +74,18 @@ export function any(...e: Expression[]): Matcher {
     };
 }
 
-export function map(e: Expression, mapper: (data: any) => any): Matcher {
+export type Mapper = DataMap | number;
+
+export function map(e: Expression, mapper: Mapper): Matcher {
     const m = toMatcher(e);
-    return r => MatchResult.copyOf(m(r)).map(mapper);
+    const mapFn: DataMap = typeof mapper === "number" ? (d => d[mapper]) : mapper;
+    return r => {
+        const res = m(r);
+        if (!res.matches) {
+            return res;
+        }
+        return res.map(mapFn);
+    };
 }
 
 function toPlainString(d: any): string {

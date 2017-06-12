@@ -2,6 +2,9 @@
 import { Reader } from "./Reader";
 import {ReadResult} from "./ReadResult";
 
+export type DataMap = (data: any) => any;
+export type ReaderMap = (reader: Reader) => Reader;
+
 export class MatchResult {
 
     public static of(reader: Reader, res: ReadResult, test: (val: string) => boolean): MatchResult {
@@ -48,12 +51,12 @@ export class MatchResult {
         return this;
     }
 
-    public mapReader(mapper: (r: Reader) => Reader): MatchResult {
+    public mapReader(mapper: ReaderMap): MatchResult {
         this.next = mapper(this.next);
         return this;
     }
 
-    public map(mapper: (data: any) => any): MatchResult {
+    public map(mapper: DataMap): MatchResult {
         this.data = mapper(this.data);
         return this;
     }

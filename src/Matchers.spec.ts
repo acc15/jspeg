@@ -95,6 +95,10 @@ describe("Matchers", () => {
         it("must map data", () => {
             expectMatch(map(oneOrMore("A"), l => l.join("")), "AAABCD", true, 3, "AAA", "BCD");
         });
+
+        it("must map only when match found", () => {
+            expectMatch(map(repeat(3, 3, "A"), k => 1), "AA", false, 2, ["A", "A"], "");
+        });
     });
 
     describe("recursive", () => {
